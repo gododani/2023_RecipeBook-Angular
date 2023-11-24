@@ -1,0 +1,88 @@
+<div class="container border p-4 rounded-lg shadow-md w-fit mx-auto mt-8">
+  <h2 class="text-2xl font-bold mb-8 text-center">Login to your account</h2>
+
+  <form [formGroup]="loginForm" (ngSubmit)="login()">
+    <!-- Email -->
+    <div class="mb-4">
+      <!-- Label for email -->
+      <label for="email" class="block text-gray-700">Email address</label>
+
+      <!-- Input for email -->
+      <input
+        type="email"
+        id="email"
+        formControlName="email"
+        class="w-full py-1 px-2 mt-1 form-input border border-gray-300 outline-none"
+        [ngStyle]="{
+          'border-color':
+            loginForm.get('email')?.invalid && loginForm.get('email')?.touched
+              ? '#EF4444'
+              : '#D1D5DB'
+        }"
+        required
+      />
+
+      <!-- Error message for email -->
+      <div
+        *ngIf="
+          loginForm.get('email')?.invalid && loginForm.get('email')?.touched
+        "
+        class="text-red-500"
+      >
+        {{ getErrorMessage("email") }}
+      </div>
+    </div>
+
+    <!-- Password -->
+    <div class="mb-4">
+      <!-- Label for password -->
+      <label for="password" class="block text-gray-700">Password</label>
+
+      <!-- Input for password -->
+      <input
+        type="password"
+        id="password"
+        formControlName="password"
+        class="w-full py-1 px-2 mt-1 form-input border border-gray-300 outline-none"
+        [ngStyle]="{
+          'border-color':
+            loginForm.get('password')?.invalid &&
+            loginForm.get('password')?.touched
+              ? '#EF4444'
+              : '#D1D5DB'
+        }"
+        required
+      />
+
+      <!-- Error message for password -->
+      <div
+        *ngIf="
+          loginForm.get('password')?.invalid &&
+          loginForm.get('password')?.touched
+        "
+        class="text-red-500"
+      >
+        {{ getErrorMessage("password") }}
+      </div>
+    </div>
+
+    <!-- Error message after clicking on the button -->
+    <div *ngIf="errorMessage" class="text-red-500 mb-4">{{ errorMessage }}</div>
+
+    <!-- Login button -->
+    <button
+      type="submit"
+      class="w-full bg-blue-500 text-white px-4 py-2 rounded"
+    >
+      Login
+    </button>
+
+    <!-- Don't have account-->
+    <p class="mt-4">
+      Don't have an account?
+      <a routerLink="/register" class="text-blue-700 cursor-pointer"
+        >Register here</a
+      >
+    </p>
+  </form>
+</div>

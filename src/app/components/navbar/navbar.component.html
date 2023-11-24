@@ -1,0 +1,42 @@
+<nav class="bg-gray-800 p-4">
+  <div class="container mx-auto flex justify-between items-center">
+    <a routerLink="/" class="text-white text-2xl font-bold">RecipeBook</a>
+    <div class="space-x-4">
+      <a
+        routerLink="/home"
+        routerLinkActive="!text-red-500"
+        class="text-white hover:text-red-300"
+        >Home</a
+      >
+      <a
+        *ngIf="isLoggedIn"
+        routerLink="/favorites"
+        routerLinkActive="!text-red-500"
+        class="text-white hover:text-red-300"
+        >Favourites</a
+      >
+      <a
+        *ngIf="isAdmin"
+        routerLink="/add-recipe"
+        routerLinkActive="!text-red-500"
+        class="text-white hover:text-red-300"
+        >Add recipe</a
+      >
+      <a
+        *ngIf="isLoggedIn; else login"
+        (click)="logout()"
+        routerLinkActive="!text-red-500"
+        class="text-white cursor-pointer hover:text-red-300"
+        >Logout</a
+      >
+      <ng-template #login>
+        <a
+          routerLink="/login"
+          routerLinkActive="!text-red-500"
+          class="text-white hover:text-red-300"
+          >Login</a
+        >
+      </ng-template>
+    </div>
+  </div>
+</nav>

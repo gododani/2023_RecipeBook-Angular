@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "webfejl-2023-recept": {
+      "hosting": {
+        "recpiebook": [
+          "webfejl-2023-recept"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "webfejl-2023-recept"
+  }
+}
