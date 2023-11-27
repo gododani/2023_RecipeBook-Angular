@@ -16,6 +16,14 @@ export class AuthService {
 
   currentUser$: Observable<any> = authState(this.auth);
 
+  getCurrentUserEmail(): Promise<string | null> {
+    return new Promise((resolve) => {
+      this.currentUser$.subscribe((user) => {
+        resolve(user ? user.email : null);
+      });
+    });
+  }
+
   async isLoggedIn(): Promise<boolean> {
     return new Promise((resolve) => {
       this.currentUser$.subscribe((user) => {

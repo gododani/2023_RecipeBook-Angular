@@ -1,1 +1,240 @@
-<p>add-recipe works!</p>
+<!-- recipe-add.component.html -->
+
+<div class="container border p-4 rounded-lg shadow-md w-fit mx-auto my-8">
+  <h2 class="text-2xl font-bold mb-8 text-center">Add a new recipe</h2>
+
+  <form [formGroup]="recipeForm" (ngSubmit)="addRecipe()">
+    <!-- Recipe Name -->
+    <div class="mb-4">
+      <label for="name" class="block text-gray-700">Recipe Name</label>
+      <input
+        type="text"
+        id="name"
+        formControlName="name"
+        class="w-full py-1 px-2 mt-1 form-input border border-gray-300 outline-none"
+        [ngStyle]="{
+          'border-color':
+            recipeForm.get('name')?.invalid && recipeForm.get('name')?.touched
+              ? '#EF4444'
+              : '#D1D5DB'
+        }"
+        required
+      />
+      <div
+        *ngIf="
+          recipeForm.get('name')?.invalid && recipeForm.get('name')?.touched
+        "
+        class="text-red-500"
+      >
+        {{ getErrorMessage("name") }}
+      </div>
+    </div>
+
+    <!-- Image -->
+    <div class="mb-4">
+      <label for="imageUrl" class="block text-gray-700">Image</label>
+      <input
+        type="text"
+        id="imageUrl"
+        formControlName="imageUrl"
+        class="w-full py-1 px-2 mt-1 form-input border border-gray-300 outline-none"
+        [ngStyle]="{
+          'border-color':
+            recipeForm.get('imageUrl')?.invalid &&
+            recipeForm.get('imageUrl')?.touched
+              ? '#EF4444'
+              : '#D1D5DB'
+        }"
+        required
+      />
+      <div
+        *ngIf="
+          recipeForm.get('imageUrl')?.invalid && recipeForm.get('imageUrl')?.touched
+        "
+        class="text-red-500"
+      >
+        {{ getErrorMessage("imageUrl") }}
+      </div>
+    </div>
+
+    <!-- Cook Time -->
+    <div class="mb-4">
+      <label for="cookTime" class="block text-gray-700">Cook Time</label>
+      <input
+        type="text"
+        id="cookTime"
+        formControlName="cookTime"
+        class="w-full py-1 px-2 mt-1 form-input border border-gray-300 outline-none"
+        [ngStyle]="{
+          'border-color':
+            recipeForm.get('cookTime')?.invalid &&
+            recipeForm.get('cookTime')?.touched
+              ? '#EF4444'
+              : '#D1D5DB'
+        }"
+        required
+      />
+      <div
+        *ngIf="
+          recipeForm.get('cookTime')?.invalid &&
+          recipeForm.get('cookTime')?.touched
+        "
+        class="text-red-500"
+      >
+        {{ getErrorMessage("cookTime") }}
+      </div>
+    </div>
+
+    <!-- Nehézség -->
+    <div class="mb-4">
+      <label for="difficulty" class="block text-gray-700">Difficulty</label>
+      <select
+        id="difficulty"
+        formControlName="difficulty"
+        class="w-full py-1 px-2 mt-1 form-select border border-gray-300 outline-none"
+        [ngStyle]="{
+          'border-color':
+            recipeForm.get('difficulty')?.invalid &&
+            recipeForm.get('difficulty')?.touched
+              ? '#EF4444'
+              : '#D1D5DB'
+        }"
+        required
+      >
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+      </select>
+      <div
+        *ngIf="
+          recipeForm.get('difficulty')?.invalid &&
+          recipeForm.get('difficulty')?.touched
+        "
+        class="text-red-500"
+      >
+        {{ getErrorMessage("difficulty") }}
+      </div>
+    </div>
+
+    <!-- Ár -->
+    <div class="mb-4">
+      <label for="price" class="block text-gray-700">Price</label>
+      <select
+        id="price"
+        formControlName="price"
+        class="w-full py-1 px-2 mt-1 form-select border border-gray-300 outline-none"
+        [ngStyle]="{
+          'border-color':
+            recipeForm.get('price')?.invalid && recipeForm.get('price')?.touched
+              ? '#EF4444'
+              : '#D1D5DB'
+        }"
+        required
+      >
+        <option value="cheap">Cheap</option>
+        <option value="normal">Normal</option>
+        <option value="expensive">Expensive</option>
+      </select>
+      <div
+        *ngIf="
+          recipeForm.get('price')?.invalid && recipeForm.get('price')?.touched
+        "
+        class="text-red-500"
+      >
+        {{ getErrorMessage("price") }}
+      </div>
+    </div>
+
+    <!-- Mennyiség -->
+    <div class="mb-4">
+      <label for="quantity" class="block text-gray-700">Quantity</label>
+      <input
+        type="number"
+        id="quantity"
+        min="1"
+        formControlName="quantity"
+        class="w-full py-1 px-2 mt-1 form-input border border-gray-300 outline-none"
+        [ngStyle]="{
+          'border-color':
+            recipeForm.get('quantity')?.invalid &&
+            recipeForm.get('quantity')?.touched
+              ? '#EF4444'
+              : '#D1D5DB'
+        }"
+        required
+      />
+      <div
+        *ngIf="
+          recipeForm.get('quantity')?.invalid &&
+          recipeForm.get('quantity')?.touched
+        "
+        class="text-red-500"
+      >
+        {{ getErrorMessage("quantity") }}
+      </div>
+    </div>
+
+    <!-- Ingredients -->
+    <div class="mb-4">
+      <label for="ingredients" class="block text-gray-700">Ingredients</label>
+      <textarea
+        id="ingredients"
+        formControlName="ingredients"
+        class="w-full py-1 px-2 mt-1 form-input border border-gray-300 outline-none"
+        [ngStyle]="{
+          'border-color':
+            recipeForm.get('ingredients')?.invalid &&
+            recipeForm.get('ingredients')?.touched
+              ? '#EF4444'
+              : '#D1D5DB'
+        }"
+        required
+      ></textarea>
+      <div
+        *ngIf="
+          recipeForm.get('ingredients')?.invalid &&
+          recipeForm.get('ingredients')?.touched
+        "
+        class="text-red-500"
+      >
+        {{ getErrorMessage("ingredients") }}
+      </div>
+    </div>
+
+    <!-- Steps -->
+    <div class="mb-4">
+      <label for="steps" class="block text-gray-700">Steps</label>
+      <textarea
+        id="steps"
+        formControlName="steps"
+        class="w-full py-1 px-2 mt-1 form-input border border-gray-300 outline-none"
+        [ngStyle]="{
+          'border-color':
+            recipeForm.get('steps')?.invalid && recipeForm.get('steps')?.touched
+              ? '#EF4444'
+              : '#D1D5DB'
+        }"
+        required
+      ></textarea>
+      <div
+        *ngIf="
+          recipeForm.get('steps')?.invalid && recipeForm.get('steps')?.touched
+        "
+        class="text-red-500"
+      >
+        {{ getErrorMessage("steps") }}
+      </div>
+    </div>
+
+    <!-- Error message after clicking on the button -->
+    <div *ngIf="errorMessage" class="text-red-500 mb-4">{{ errorMessage }}</div>
+
+    <!-- Add Recipe button -->
+    <button
+      type="submit"
+      class="w-full bg-blue-500 text-white px-4 py-2 rounded"
+    >
+      Add Recipe
+    </button>
+  </form>
+</div>
