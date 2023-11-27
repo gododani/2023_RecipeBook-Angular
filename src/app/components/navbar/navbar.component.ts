@@ -13,6 +13,8 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 export class NavbarComponent implements OnInit {
   isLoggedIn: boolean = false;
   isAdmin: boolean = false;
+  mobileMenuOpen = false;
+
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
@@ -24,19 +26,14 @@ export class NavbarComponent implements OnInit {
     });
   }
 
-  ngOnChanges() {
-    this.authService.isLoggedIn().then((loggedIn) => {
-      this.isLoggedIn = loggedIn;
-    });
-
-    this.authService.isAdmin().then((isAdmin) => {
-      this.isAdmin = isAdmin;
-    });
-  }
-
   logout(): void {
     this.authService.logout().then(() => {
       this.router.navigate(['/home']);
+      this.toggleMobileMenuOpen();
     });
+  }
+
+  toggleMobileMenuOpen() {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
   }
 }

@@ -1,42 +1,167 @@
-<nav class="bg-gray-800 p-4">
-  <div class="container mx-auto flex justify-between items-center">
-    <a routerLink="/" class="text-white text-2xl font-bold">RecipeBook</a>
-    <div class="space-x-4">
+<nav class="mx-auto flex max-w-7xl items-center justify-between p-6 md:px-8">
+  <!-- Nav element left -->
+  <div class="flex md:flex-1">
+    <a
+      *ngIf="!mobileMenuOpen"
+      routerLink="/"
+      class="text-2xl font-semibold leading-6 text-gray-900"
+      >RecipeBook</a
+    >
+  </div>
+
+  <!-- Nav elements middle -->
+  <div class="hidden md:flex md:gap-x-12">
+    <a
+      routerLink="/home"
+      routerLinkActive="!text-red-500"
+      class="font-semibold leading-6 text-gray-900"
+      >Home</a
+    >
+    <a
+      *ngIf="isLoggedIn"
+      routerLink="/favorites"
+      routerLinkActive="!text-red-500"
+      class="font-semibold leading-6 text-gray-900"
+      >Favourites</a
+    >
+    <a
+      *ngIf="isAdmin"
+      routerLink="/add-recipe"
+      routerLinkActive="!text-red-500"
+      class="font-semibold leading-6 text-gray-900"
+      >Add recipe</a
+    >
+  </div>
+
+  <!-- Nav elements right -->
+  <div class="hidden md:flex md:flex-1 md:justify-end">
+    <a
+      *ngIf="isLoggedIn; else login"
+      (click)="logout()"
+      routerLinkActive="!text-red-500"
+      class="font-semibold leading-6 text-gray-900"
+      >Logout</a
+    >
+    <ng-template #login>
       <a
-        routerLink="/home"
+        routerLink="/login"
         routerLinkActive="!text-red-500"
-        class="text-white hover:text-red-300"
-        >Home</a
+        class="font-semibold leading-6 text-gray-900"
+        >Login</a
       >
-      <a
-        *ngIf="isLoggedIn"
-        routerLink="/favorites"
-        routerLinkActive="!text-red-500"
-        class="text-white hover:text-red-300"
-        >Favourites</a
+    </ng-template>
+  </div>
+
+  <!-- Menu icon -->
+  <div class="flex md:hidden">
+    <button
+      type="button"
+      class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+      (click)="toggleMobileMenuOpen()"
+    >
+      <svg
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="black"
+        aria-hidden="true"
       >
-      <a
-        *ngIf="isAdmin"
-        routerLink="/add-recipe"
-        routerLinkActive="!text-red-500"
-        class="text-white hover:text-red-300"
-        >Add recipe</a
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+        />
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile navbar -->
+<nav *ngIf="mobileMenuOpen" class="md:hidden">
+  <div
+    class="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10"
+  >
+    <!-- First line -->
+    <div class="flex items-center justify-between">
+      <!-- Name -->
+      <a routerLink="/" class="text-2xl font-semibold leading-6 text-gray-900"
+        >RecipeBook</a
       >
-      <a
-        *ngIf="isLoggedIn; else login"
-        (click)="logout()"
-        routerLinkActive="!text-red-500"
-        class="text-white cursor-pointer hover:text-red-300"
-        >Logout</a
+      <!-- Close icon -->
+      <button
+        type="button"
+        class="-m-2.5 rounded-md p-2.5 text-gray-700"
+        (click)="toggleMobileMenuOpen()"
       >
-      <ng-template #login>
-        <a
-          routerLink="/login"
-          routerLinkActive="!text-red-500"
-          class="text-white hover:text-red-300"
-          >Login</a
+        <svg
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          aria-hidden="true"
         >
-      </ng-template>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Nav elements -->
+    <div class="mt-6 flow-root">
+      <!-- Divider -->
+      <div class="-my-6 divide-y divide-gray-500/10">
+        <!-- Nav elements top -->
+        <div class="space-y-2 py-6">
+          <a
+            routerLink="/home"
+            routerLinkActive="!text-red-500"
+            class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+            (click)="toggleMobileMenuOpen()"
+            >Home</a
+          >
+          <a
+            *ngIf="isLoggedIn"
+            routerLink="/favorites"
+            routerLinkActive="!text-red-500"
+            class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+            (click)="toggleMobileMenuOpen()"
+            >Favourites</a
+          >
+          <a
+            *ngIf="isAdmin"
+            routerLink="/add-recipe"
+            routerLinkActive="!text-red-500"
+            class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+            (click)="toggleMobileMenuOpen()"
+            >Add recipe</a
+          >
+        </div>
+
+        <!-- Nav elements bottom -->
+        <div class="py-6">
+          <a
+            *ngIf="isLoggedIn; else login"
+            (click)="logout()"
+            routerLinkActive="!text-red-500"
+            class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+            >Logout</a
+          >
+          <ng-template #login>
+            <a
+              routerLink="/login"
+              routerLinkActive="!text-red-500"
+              class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+              (click)="toggleMobileMenuOpen()"
+              >Login</a
+            >
+          </ng-template>
+        </div>
+      </div>
     </div>
   </div>
 </nav>
