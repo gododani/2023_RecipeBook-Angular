@@ -23,7 +23,7 @@ export class AddRecipeComponent {
     cookTime: new FormControl('', [Validators.required]),
     difficulty: new FormControl('', [Validators.required]),
     price: new FormControl('', [Validators.required]),
-    quantity: new FormControl('', [Validators.required, Validators.min(1)]),
+    serving: new FormControl('', [Validators.required, Validators.min(1)]),
     ingredients: new FormControl('', [Validators.required]),
     steps: new FormControl('', [Validators.required]),
   });
@@ -43,7 +43,7 @@ export class AddRecipeComponent {
       cookTime,
       difficulty,
       price,
-      quantity,
+      serving,
       ingredients,
       steps,
     } = this.recipeForm.value;
@@ -54,7 +54,7 @@ export class AddRecipeComponent {
       cookTime,
       difficulty,
       price,
-      quantity,
+      serving,
       ingredients: ingredients!.split('\n'),
       steps: steps!.split('\n'),
     } as unknown as Recipe;

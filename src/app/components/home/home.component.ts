@@ -22,10 +22,6 @@ export class HomeComponent {
   ngOnInit(): void {
     this.recipeService.getRecipes().subscribe((data) => {
       this.recipes = data;
-      this.recipes.forEach((recipe) => {
-        // this.recipeService.getRecipeLikes(recipe.id);
-        // this.recipeService.getRecipeDislikes(recipe.id);
-      });
     });
     this.recipeService.getFavouriteRecipes().subscribe((data) => {
       this.favouriteRecipes = data;

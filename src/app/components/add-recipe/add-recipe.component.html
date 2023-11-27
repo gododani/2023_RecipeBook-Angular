@@ -1,6 +1,6 @@
 <!-- recipe-add.component.html -->
 
-<div class="container border p-4 rounded-lg shadow-md w-fit mx-auto my-8">
+<div class="container border p-4 rounded-lg shadow-md sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl mx-auto my-8">
   <h2 class="text-2xl font-bold mb-8 text-center">Add a new recipe</h2>
 
   <form [formGroup]="recipeForm" (ngSubmit)="addRecipe()">
@@ -30,9 +30,9 @@
       </div>
     </div>
 
-    <!-- Image -->
+    <!-- Image URL -->
     <div class="mb-4">
-      <label for="imageUrl" class="block text-gray-700">Image</label>
+      <label for="imageUrl" class="block text-gray-700">Image URL</label>
       <input
         type="text"
         id="imageUrl"
@@ -59,7 +59,7 @@
 
     <!-- Cook Time -->
     <div class="mb-4">
-      <label for="cookTime" class="block text-gray-700">Cook Time</label>
+      <label for="cookTime" class="block text-gray-700">Cook Time (minutes)</label>
       <input
         type="text"
         id="cookTime"
@@ -147,17 +147,17 @@
 
     <!-- Mennyiség -->
     <div class="mb-4">
-      <label for="quantity" class="block text-gray-700">Quantity</label>
+      <label for="serving" class="block text-gray-700">Serving</label>
       <input
         type="number"
-        id="quantity"
+        id="serving"
         min="1"
-        formControlName="quantity"
+        formControlName="serving"
         class="w-full py-1 px-2 mt-1 form-input border border-gray-300 outline-none"
         [ngStyle]="{
           'border-color':
-            recipeForm.get('quantity')?.invalid &&
-            recipeForm.get('quantity')?.touched
+            recipeForm.get('serving')?.invalid &&
+            recipeForm.get('serving')?.touched
               ? '#EF4444'
               : '#D1D5DB'
         }"
@@ -165,18 +165,18 @@
       />
       <div
         *ngIf="
-          recipeForm.get('quantity')?.invalid &&
-          recipeForm.get('quantity')?.touched
+          recipeForm.get('serving')?.invalid &&
+          recipeForm.get('serving')?.touched
         "
         class="text-red-500"
       >
-        {{ getErrorMessage("quantity") }}
+        {{ getErrorMessage("serving") }}
       </div>
     </div>
 
     <!-- Ingredients -->
     <div class="mb-4">
-      <label for="ingredients" class="block text-gray-700">Ingredients</label>
+      <label for="ingredients" class="block text-gray-700">Ingredients (each one to new line)</label>
       <textarea
         id="ingredients"
         formControlName="ingredients"
@@ -203,7 +203,7 @@
 
     <!-- Steps -->
     <div class="mb-4">
-      <label for="steps" class="block text-gray-700">Steps</label>
+      <label for="steps" class="block text-gray-700">Steps (each one to new line)</label>
       <textarea
         id="steps"
         formControlName="steps"
