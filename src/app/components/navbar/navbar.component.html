@@ -2,7 +2,6 @@
   <!-- Nav element left -->
   <div class="flex md:flex-1">
     <a
-      *ngIf="!mobileMenuOpen"
       routerLink="/"
       class="text-2xl font-semibold leading-6 text-gray-900"
       >RecipeBook</a
@@ -13,40 +12,44 @@
   <div class="hidden md:flex md:gap-x-12">
     <a
       routerLink="/home"
-      routerLinkActive="!text-red-500"
-      class="font-semibold leading-6 text-gray-900"
+      routerLinkActive="!text-blue-500"
+      class="px-3 py-2.5 rounded-lg font-semibold leading-6 text-gray-900 hover:bg-gray-50"
       >Home</a
     >
     <a
       *ngIf="isLoggedIn"
       routerLink="/favorites"
-      routerLinkActive="!text-red-500"
-      class="font-semibold leading-6 text-gray-900"
+      routerLinkActive="!text-blue-500"
+      class="px-3 py-2.5 rounded-lg font-semibold leading-6 text-gray-900 hover:bg-gray-50"
       >Favourites</a
     >
     <a
       *ngIf="isAdmin"
       routerLink="/add-recipe"
-      routerLinkActive="!text-red-500"
-      class="font-semibold leading-6 text-gray-900"
+      routerLinkActive="!text-blue-500"
+      class="px-3 py-2.5 rounded-lg font-semibold leading-6 text-gray-900 hover:bg-gray-50"
       >Add recipe</a
     >
   </div>
 
   <!-- Nav elements right -->
   <div class="hidden md:flex md:flex-1 md:justify-end">
+
+    <!-- Logout -->
     <a
       *ngIf="isLoggedIn; else login"
       (click)="logout()"
-      routerLinkActive="!text-red-500"
-      class="font-semibold leading-6 text-gray-900"
+      routerLinkActive="!text-blue-500"
+      class="px-3 py-2.5 rounded-lg font-semibold leading-6 text-gray-900 cursor-pointer hover:bg-gray-50"
       >Logout</a
     >
+
+    <!-- Login -->
     <ng-template #login>
       <a
         routerLink="/login"
-        routerLinkActive="!text-red-500"
-        class="font-semibold leading-6 text-gray-900"
+        routerLinkActive="!text-blue-500"
+        class="px-3 py-2.5 rounded-lg font-semibold leading-6 text-gray-900 cursor-pointer hover:bg-gray-50"
         >Login</a
       >
     </ng-template>
@@ -113,13 +116,12 @@
 
     <!-- Nav elements -->
     <div class="mt-6 flow-root">
-      <!-- Divider -->
       <div class="-my-6 divide-y divide-gray-500/10">
         <!-- Nav elements top -->
         <div class="space-y-2 py-6">
           <a
             routerLink="/home"
-            routerLinkActive="!text-red-500"
+            routerLinkActive="!text-blue-500"
             class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
             (click)="toggleMobileMenuOpen()"
             >Home</a
@@ -127,7 +129,7 @@
           <a
             *ngIf="isLoggedIn"
             routerLink="/favorites"
-            routerLinkActive="!text-red-500"
+            routerLinkActive="!text-blue-500"
             class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
             (click)="toggleMobileMenuOpen()"
             >Favourites</a
@@ -135,7 +137,7 @@
           <a
             *ngIf="isAdmin"
             routerLink="/add-recipe"
-            routerLinkActive="!text-red-500"
+            routerLinkActive="!text-blue-500"
             class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
             (click)="toggleMobileMenuOpen()"
             >Add recipe</a
@@ -147,15 +149,15 @@
           <a
             *ngIf="isLoggedIn; else login"
             (click)="logout()"
-            routerLinkActive="!text-red-500"
-            class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+            routerLinkActive="!text-blue-500"
+            class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 cursor-pointer"
             >Logout</a
           >
           <ng-template #login>
             <a
               routerLink="/login"
-              routerLinkActive="!text-red-500"
-              class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+              routerLinkActive="!text-blue-500"
+              class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 cursor-pointer"
               (click)="toggleMobileMenuOpen()"
               >Login</a
             >

@@ -29,7 +29,7 @@ export class NavbarComponent implements OnInit {
   logout(): void {
     this.authService.logout().then(() => {
       this.router.navigate(['/home']);
-      this.toggleMobileMenuOpen();
+      if (this.mobileMenuOpen) this.toggleMobileMenuOpen();
     });
   }
 
