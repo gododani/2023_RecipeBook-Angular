@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Observable, map } from 'rxjs';
+import { Observable, combineLatest, filter, map, of, switchMap } from 'rxjs';
 import { Recipe } from '../types/Recipe';
 import { AuthService } from './auth.service';
 
@@ -29,7 +29,7 @@ export class RecipeService {
       });
   }
 
-  getFavouriteRecipes(): Observable<string[]> {
+  getFavouriteRecipeIds(): Observable<string[]> {
     return new Observable((observer) => {
       this.authService.getCurrentUserEmail().then((userEmail) => {
         this.firestore
@@ -64,6 +64,37 @@ export class RecipeService {
           );
       });
     });
+  }
+
+  getUserFavouriteRecipes(): Observable<Recipe[]> {
+    return this.getFavouriteRecipeIds().pipe(
+      switchMap((recipeIds) => {
+        if (recipeIds.length === 0) {
+          // If there are no favorite recipe ids, return an empty array
+          return of([]);
+        }
+
+        // Get recipes as observables
+        const recipeObservables: Observable<Recipe | undefined>[] =
+          recipeIds.map((id) =>
+            this.firestore
+              .doc<Recipe>(`recipes/${id}`)
+              .valueChanges({ idField: 'id' })
+              .pipe(
+                // Filter out undefined values
+                filter((recipe) => recipe !== undefined)
+              )
+          );
+
+        // Use combineLatest to combine the latest values from all observables
+        return combineLatest(recipeObservables).pipe(
+          // Ensure that every array element is defined
+          filter((recipes) => recipes.every((recipe) => recipe !== undefined)),
+          // Convert the array of defined recipes
+          map((recipes) => recipes as Recipe[])
+        );
+      })
+    );
   }
 
   addToFavorites(recipeId: string): void {

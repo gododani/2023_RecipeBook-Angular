@@ -23,7 +23,7 @@ export class HomeComponent {
     this.recipeService.getRecipes().subscribe((data) => {
       this.recipes = data;
     });
-    this.recipeService.getFavouriteRecipes().subscribe((data) => {
+    this.recipeService.getFavouriteRecipeIds().subscribe((data) => {
       this.favouriteRecipes = data;
     });
     this.recipeService.getUserLikes().subscribe((data) => {

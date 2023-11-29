@@ -6,7 +6,7 @@
   <form [formGroup]="recipeForm" (ngSubmit)="addRecipe()">
     <!-- Recipe Name -->
     <div class="mb-4">
-      <label for="name" class="block text-gray-700">Recipe Name</label>
+      <label for="name" class="text-gray-700">Recipe Name</label>
       <input
         type="text"
         id="name"
@@ -32,7 +32,7 @@
 
     <!-- Image URL -->
     <div class="mb-4">
-      <label for="imageUrl" class="block text-gray-700">Image URL</label>
+      <label for="imageUrl" class="text-gray-700">Image URL</label>
       <input
         type="text"
         id="imageUrl"
@@ -59,7 +59,7 @@
 
     <!-- Cook Time -->
     <div class="mb-4">
-      <label for="cookTime" class="block text-gray-700">Cook Time (minutes)</label>
+      <label for="cookTime" class="text-gray-700">Cook Time (minutes)</label>
       <input
         type="text"
         id="cookTime"
@@ -85,9 +85,9 @@
       </div>
     </div>
 
-    <!-- Nehézség -->
+    <!-- Difficulty -->
     <div class="mb-4">
-      <label for="difficulty" class="block text-gray-700">Difficulty</label>
+      <label for="difficulty" class="text-gray-700">Difficulty</label>
       <select
         id="difficulty"
         formControlName="difficulty"
@@ -118,7 +118,7 @@
 
     <!-- Ár -->
     <div class="mb-4">
-      <label for="price" class="block text-gray-700">Price</label>
+      <label for="price" class="text-gray-700">Price</label>
       <select
         id="price"
         formControlName="price"
@@ -147,7 +147,7 @@
 
     <!-- Mennyiség -->
     <div class="mb-4">
-      <label for="serving" class="block text-gray-700">Serving</label>
+      <label for="serving" class="text-gray-700">Serving</label>
       <input
         type="number"
         id="serving"
@@ -176,7 +176,7 @@
 
     <!-- Ingredients -->
     <div class="mb-4">
-      <label for="ingredients" class="block text-gray-700">Ingredients (each one to new line)</label>
+      <label for="ingredients" class="text-gray-700">Ingredients (each one to new line)</label>
       <textarea
         id="ingredients"
         formControlName="ingredients"
@@ -203,7 +203,7 @@
 
     <!-- Steps -->
     <div class="mb-4">
-      <label for="steps" class="block text-gray-700">Steps (each one to new line)</label>
+      <label for="steps" class="text-gray-700">Steps (each one to new line)</label>
       <textarea
         id="steps"
         formControlName="steps"
