@@ -1,3 +1,4 @@
+import { AuthService } from './../../services/auth.service';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecipeService } from '../../services/recipe.service';
@@ -16,22 +17,31 @@ export class HomeComponent {
   likes: { [recipeId: string]: number } = {};
   userDislikes: string[] = [];
   dislikes: { [recipeId: string]: number } = {};
+  userLoggedIn: boolean = false;
 
-  constructor(private recipeService: RecipeService) {}
+  constructor(
+    private recipeService: RecipeService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.recipeService.getRecipes().subscribe((data) => {
       this.recipes = data;
     });
-    this.recipeService.getFavouriteRecipeIds().subscribe((data) => {
-      this.favouriteRecipes = data;
+    this.authService.isLoggedIn().then((loggedIn) => {
+      this.userLoggedIn = loggedIn;
     });
-    this.recipeService.getUserLikes().subscribe((data) => {
-      this.userLikes = data;
-    });
-    this.recipeService.getUserDislikes().subscribe((data) => {
-      this.userDislikes = data;
-    });
+    if (this.userLoggedIn) {
+      this.recipeService.getFavouriteRecipeIds().subscribe((data) => {
+        this.favouriteRecipes = data;
+      });
+      this.recipeService.getUserLikes().subscribe((data) => {
+        this.userLikes = data;
+      });
+      this.recipeService.getUserDislikes().subscribe((data) => {
+        this.userDislikes = data;
+      });
+    }
   }
 
   isFavourite(recipeId: string): boolean {

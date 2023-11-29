@@ -97,6 +97,9 @@ export class RegisterComponent {
           username: username,
           email: email,
           role: 'user',
+          likes: [],
+          dislikes: [],
+          favourites: [],
         };
 
         this.afs

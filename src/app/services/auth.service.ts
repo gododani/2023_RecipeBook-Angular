@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Auth, authState } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,8 @@ export class AuthService {
   constructor(
     private auth: Auth,
     private angularFireAuth: AngularFireAuth,
-    private afs: AngularFirestore
+    private afs: AngularFirestore,
+    private router: Router
   ) {}
 
   currentUser$: Observable<any> = authState(this.auth);
@@ -72,6 +74,7 @@ export class AuthService {
   async logout() {
     try {
       await this.auth.signOut();
+      this.router.navigate(['/login']);
     } catch (error) {
       console.error('Logout error:', error);
     }
