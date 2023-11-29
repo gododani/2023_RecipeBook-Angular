@@ -22,11 +22,9 @@ export class FavouritesComponent {
   ngOnInit(): void {
     this.recipeService.getUserFavouriteRecipes().subscribe((data) => {
       this.recipes = data;
-      console.log('recipes', this.recipes);
     });
     this.recipeService.getFavouriteRecipeIds().subscribe((data) => {
       this.favouriteRecipeIds = data;
-      console.log('recipes', this.favouriteRecipeIds);
     });
     this.recipeService.getUserLikes().subscribe((data) => {
       this.userLikes = data;
