@@ -1,10 +1,13 @@
 export type Recipe = {
+  id : string;
   name: string;
-  image: string;
+  imageUrl: string;
   cookTime: string;
+  likes: number;
+  dislikes: number;
   ingredients: string[];
   steps: Map<number, { description: string }>;
   difficulty: 'easy' | 'medium' | 'hard';
   price: 'cheap' | 'normal' | 'expensive';
-  quantity: number;
+  serving: number;
 }

@@ -1,3 +1,5 @@
+<app-searchbar (recipesEvent)="updateRecipes($event)"></app-searchbar>
+
 <div
   class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8 p-8"
 >
@@ -12,7 +14,7 @@
       </div>
 
       <!-- Recipe id -->
-      <div class="pt-4 text-2xl font-bold text-center">{{ recipe.id }}</div>
+      <div class="pt-4 font-bold text-center">{{ recipe.id }}</div>
 
       <!-- Image -->
       <div class="px-4">
@@ -86,7 +88,7 @@
           </ng-template>
         </div>
 
-        <!-- Likes and dislikes -->
+        <!-- User logged in -->
         <div *ngIf="userLoggedIn; else noUser" class="flex gap-5">
           <!-- Like -->
           <div
@@ -155,11 +157,12 @@
             <p class="text-xl sm:text-lg md:text-base">{{ recipe.dislikes }}</p>
           </div>
         </div>
+
+        <!-- User logged out -->
         <ng-template #noUser>
           <div class="w-full flex justify-end gap-5">
             <!-- Like -->
             <div class="flex items-center gap-1.5">
-              <!-- Like icon -->
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-7 w-7 md:h-6 md:w-6 cursor-not-allowed"
@@ -174,7 +177,6 @@
 
             <!-- Dislike -->
             <div class="flex items-center gap-1.5">
-              <!-- Dislike icon -->
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-7 w-7 md:h-6 md:w-6 cursor-not-allowed"

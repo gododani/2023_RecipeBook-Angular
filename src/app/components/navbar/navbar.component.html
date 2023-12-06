@@ -12,21 +12,21 @@
   <div class="hidden md:flex md:gap-x-12">
     <a
       routerLink="/home"
-      routerLinkActive="!text-blue-500"
+      routerLinkActive="!text-sky-500"
       class="px-3 py-2.5 rounded-lg font-semibold leading-6 text-gray-900 hover:bg-gray-50"
       >Home</a
     >
     <a
       *ngIf="isLoggedIn"
       routerLink="/favorites"
-      routerLinkActive="!text-blue-500"
+      routerLinkActive="!text-sky-500"
       class="px-3 py-2.5 rounded-lg font-semibold leading-6 text-gray-900 hover:bg-gray-50"
       >Favourites</a
     >
     <a
       *ngIf="isAdmin"
       routerLink="/add-recipe"
-      routerLinkActive="!text-blue-500"
+      routerLinkActive="!text-sky-500"
       class="px-3 py-2.5 rounded-lg font-semibold leading-6 text-gray-900 hover:bg-gray-50"
       >Add recipe</a
     >
@@ -39,7 +39,7 @@
     <a
       *ngIf="isLoggedIn; else login"
       (click)="logout()"
-      routerLinkActive="!text-blue-500"
+      routerLinkActive="!text-sky-500"
       class="px-3 py-2.5 rounded-lg font-semibold leading-6 text-gray-900 cursor-pointer hover:bg-gray-50"
       >Logout</a
     >
@@ -48,7 +48,7 @@
     <ng-template #login>
       <a
         routerLink="/login"
-        routerLinkActive="!text-blue-500"
+        routerLinkActive="!text-sky-500"
         class="px-3 py-2.5 rounded-lg font-semibold leading-6 text-gray-900 cursor-pointer hover:bg-gray-50"
         >Login</a
       >
@@ -121,7 +121,7 @@
         <div class="space-y-2 py-6">
           <a
             routerLink="/home"
-            routerLinkActive="!text-blue-500"
+            routerLinkActive="!text-sky-500"
             class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
             (click)="toggleMobileMenuOpen()"
             >Home</a
@@ -129,7 +129,7 @@
           <a
             *ngIf="isLoggedIn"
             routerLink="/favorites"
-            routerLinkActive="!text-blue-500"
+            routerLinkActive="!text-sky-500"
             class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
             (click)="toggleMobileMenuOpen()"
             >Favourites</a
@@ -137,7 +137,7 @@
           <a
             *ngIf="isAdmin"
             routerLink="/add-recipe"
-            routerLinkActive="!text-blue-500"
+            routerLinkActive="!text-sky-500"
             class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
             (click)="toggleMobileMenuOpen()"
             >Add recipe</a
@@ -149,14 +149,14 @@
           <a
             *ngIf="isLoggedIn; else login"
             (click)="logout()"
-            routerLinkActive="!text-blue-500"
+            routerLinkActive="!text-sky-500"
             class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 cursor-pointer"
             >Logout</a
           >
           <ng-template #login>
             <a
               routerLink="/login"
-              routerLinkActive="!text-blue-500"
+              routerLinkActive="!text-sky-500"
               class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 cursor-pointer"
               (click)="toggleMobileMenuOpen()"
               >Login</a

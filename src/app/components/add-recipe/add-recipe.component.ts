@@ -52,6 +52,8 @@ export class AddRecipeComponent {
       name,
       imageUrl,
       cookTime,
+      likes: 0,
+      dislikes: 0,
       difficulty,
       price,
       serving,

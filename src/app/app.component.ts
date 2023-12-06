@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Firestore, addDoc, collection } from '@angular/fire/firestore';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { SearchbarComponent } from './components/searchbar/searchbar.component';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     RouterLink,
     RouterLinkActive,
     NavbarComponent,
+    SearchbarComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',

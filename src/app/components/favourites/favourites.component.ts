@@ -11,7 +11,7 @@ import { Recipe } from '../../types/Recipe';
   styleUrl: './favourites.component.css',
 })
 export class FavouritesComponent {
-  recipes: any[] = [];
+  recipes: Recipe[] = [];
   favouriteRecipeIds: string[] = [];
   userLikes: string[] = [];
   likes: { [recipeId: string]: number } = {};

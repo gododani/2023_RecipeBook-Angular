@@ -2,11 +2,12 @@ import { AuthService } from './../../services/auth.service';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecipeService } from '../../services/recipe.service';
+import { SearchbarComponent } from '../searchbar/searchbar.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SearchbarComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
@@ -30,18 +31,19 @@ export class HomeComponent {
     });
     this.authService.isLoggedIn().then((loggedIn) => {
       this.userLoggedIn = loggedIn;
+
+      if (this.userLoggedIn) {
+        this.recipeService.getFavouriteRecipeIds().subscribe((data) => {
+          this.favouriteRecipes = data;
+        });
+        this.recipeService.getUserLikes().subscribe((data) => {
+          this.userLikes = data;
+        });
+        this.recipeService.getUserDislikes().subscribe((data) => {
+          this.userDislikes = data;
+        });
+      }
     });
-    if (this.userLoggedIn) {
-      this.recipeService.getFavouriteRecipeIds().subscribe((data) => {
-        this.favouriteRecipes = data;
-      });
-      this.recipeService.getUserLikes().subscribe((data) => {
-        this.userLikes = data;
-      });
-      this.recipeService.getUserDislikes().subscribe((data) => {
-        this.userDislikes = data;
-      });
-    }
   }
 
   isFavourite(recipeId: string): boolean {
@@ -111,5 +113,9 @@ export class HomeComponent {
       );
       this.userDislikes = updatedDislikes;
     }
+  }
+
+  updateRecipes(recipes: any[]) {
+    this.recipes = recipes;
   }
 }
