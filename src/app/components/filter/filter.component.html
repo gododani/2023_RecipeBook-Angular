@@ -2,7 +2,7 @@
   <form class="w-full max-w-sm">
     <div class="flex items-center py-2">
       <select
-        class="appearance-none bg-transparent w-full border-2 border-sky-500 rounded text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+        class="appearance-none bg-transparent w-full border-2 border-sky-500 rounded text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none cursor-pointer"
         [(ngModel)]="selectedFilter"
         name="selectedFilter"
         (change)="filterChanged.emit(selectedFilter)"
