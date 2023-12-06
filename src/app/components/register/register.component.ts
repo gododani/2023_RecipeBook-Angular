@@ -106,9 +106,10 @@ export class RegisterComponent {
         this.afs
           .collection('users')
           .add(data)
-          .then(async() => {
-            await new Promise(f => setTimeout(f, 1000));
-            this.router.navigate(['/home']);
+          .then(async () => {
+            await new Promise((f) => setTimeout(f, 1000)).then(() =>
+              this.router.navigate(['/home'])
+            );
           })
           .catch((error) => {
             this.errorMessage = error;
