@@ -12,6 +12,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { delay } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -105,7 +106,8 @@ export class RegisterComponent {
         this.afs
           .collection('users')
           .add(data)
-          .then(() => {
+          .then(async() => {
+            await new Promise(f => setTimeout(f, 1000));
             this.router.navigate(['/home']);
           })
           .catch((error) => {
