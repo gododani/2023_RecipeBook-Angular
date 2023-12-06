@@ -3,11 +3,14 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecipeService } from '../../services/recipe.service';
 import { SearchbarComponent } from '../searchbar/searchbar.component';
+import { FilterComponent } from '../filter/filter.component';
+import { Recipe } from '../../types/Recipe';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, SearchbarComponent],
+  imports: [CommonModule, SearchbarComponent, FilterComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
@@ -19,20 +22,28 @@ export class HomeComponent {
   userDislikes: string[] = [];
   dislikes: { [recipeId: string]: number } = {};
   userLoggedIn: boolean = false;
+  isAdmin: boolean = false;
+  selectedFilter = 'name';
 
   constructor(
     private recipeService: RecipeService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.recipeService.getRecipes().subscribe((data) => {
       this.recipes = data;
+      this.applyFilter(this.selectedFilter);
     });
-    this.authService.isLoggedIn().then((loggedIn) => {
+
+    this.authService.isLoggedIn().then(async (loggedIn) => {
       this.userLoggedIn = loggedIn;
 
       if (this.userLoggedIn) {
+        if (await this.authService.isAdmin()) {
+          this.isAdmin = true;
+        }
         this.recipeService.getFavouriteRecipeIds().subscribe((data) => {
           this.favouriteRecipes = data;
         });
@@ -115,7 +126,31 @@ export class HomeComponent {
     }
   }
 
-  updateRecipes(recipes: any[]) {
+  applyFilter(filter: string) {
+    switch (filter) {
+      case 'name':
+        this.recipes.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'likes':
+        this.recipes.sort((a, b) => b.likes - a.likes);
+        break;
+      case 'dislikes':
+        this.recipes.sort((a, b) => b.dislikes - a.dislikes);
+        break;
+    }
+  }
+
+  updateRecipes(recipes: Recipe[]) {
     this.recipes = recipes;
+    this.applyFilter(this.selectedFilter);
+  }
+
+  deleteRecipe(recipeId: string): void {
+    this.recipeService.deleteRecipe(recipeId);
+  }
+
+  modifyRecipe(recipe: Recipe): void {
+    this.recipeService.setRecipeToModify(recipe);
+    this.router.navigate(['/modify-recipe']);
   }
 }

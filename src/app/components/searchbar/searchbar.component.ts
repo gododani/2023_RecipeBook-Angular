@@ -4,6 +4,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Recipe } from '../../types/Recipe';
+import { RecipeService } from '../../services/recipe.service';
 
 @Component({
   selector: 'app-searchbar',
@@ -18,21 +19,31 @@ export class SearchbarComponent {
 
   recipes!: Observable<Recipe[]>;
 
-  constructor(private firestore: AngularFirestore) {}
+  constructor(
+    private firestore: AngularFirestore,
+    private recipeService: RecipeService
+  ) {}
 
   search() {
+    // Check if the search term is empty or only contains whitespace
     if (!this.searchTerm.trim()) {
-      return;
+      // If the search term is empty, get all recipes
+      this.recipes = this.recipeService.getRecipes();
+      this.recipes.subscribe((data) => {
+        this.recipesEvent.emit(data);
+      });
+    } else {
+      // If the search term is not empty, search for recipes that match the search term
+      this.recipes = this.searchRecipes(this.searchTerm);
+      this.recipes.subscribe((data) => {
+        this.recipesEvent.emit(data);
+      });
     }
-    this.recipes = this.searchRecipes(this.searchTerm);
-    this.recipes.subscribe((data) => {
-      this.recipesEvent.emit(data);
-    });
   }
 
   searchRecipes(searchTerm: string): Observable<any[]> {
     return this.firestore
       .collection('recipes', (ref) => ref.where('name', '==', searchTerm))
-      .valueChanges();
+      .valueChanges({ idField: 'id'});
   }
 }

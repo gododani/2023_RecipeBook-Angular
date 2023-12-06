@@ -5,12 +5,14 @@ import { AddRecipeComponent } from './components/add-recipe/add-recipe.component
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
+import { ModifyRecipeComponent } from './components/modify-recipe/modify-recipe.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
   { path: 'favorites', component: FavouritesComponent },
   { path: 'add-recipe', component: AddRecipeComponent },
+  { path: 'modify-recipe', component: ModifyRecipeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: '**', component: NotFoundComponent },

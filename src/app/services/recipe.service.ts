@@ -8,6 +8,8 @@ import { AuthService } from './auth.service';
   providedIn: 'root',
 })
 export class RecipeService {
+  recipeToModify!: Recipe;
+
   constructor(
     private firestore: AngularFirestore,
     private authService: AuthService
@@ -430,5 +432,21 @@ export class RecipeService {
           }
         );
     });
+  }
+
+  deleteRecipe(recipeId: string): void {
+    this.firestore.collection('recipes').doc(recipeId).delete();
+  }
+
+  modifyRecipe(id: string, recipe: Recipe): void {
+    this.firestore.collection('recipes').doc(id).update(recipe);
+  }
+
+  setRecipeToModify(recipe: any): void {
+    this.recipeToModify = recipe;
+  }
+
+  getRecipeToModify(): any {
+    return this.recipeToModify;
   }
 }

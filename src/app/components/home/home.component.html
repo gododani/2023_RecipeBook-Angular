@@ -1,4 +1,10 @@
-<app-searchbar (recipesEvent)="updateRecipes($event)"></app-searchbar>
+<div class="flex gap-5 justify-center items-center">
+  <div class="flex items-center space-x-2">
+    <span class="text-lg font-semibold">Filter by:</span>
+    <app-filter (filterChanged)="applyFilter($event)"></app-filter>
+  </div>
+  <app-searchbar (recipesEvent)="updateRecipes($event)"></app-searchbar>
+</div>
 
 <div
   class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8 p-8"
@@ -14,7 +20,7 @@
       </div>
 
       <!-- Recipe id -->
-      <div class="pt-4 font-bold text-center">{{ recipe.id }}</div>
+      <!-- <div class="pt-4 font-bold text-center">{{ recipe.id }}</div> -->
 
       <!-- Image -->
       <div class="px-4">
@@ -193,6 +199,25 @@
             </div>
           </div>
         </ng-template>
+      </div>
+
+      <!-- Modify and delete buttons -->
+      <div *ngIf="isAdmin" class="flex justify-center gap-5 p-5">
+        <!-- Modify button -->
+        <button
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          (click)="modifyRecipe(recipe)"
+        >
+          Modify
+        </button>
+
+        <!-- Delete button -->
+        <button
+          class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          (click)="deleteRecipe(recipe.id)"
+        >
+          Delete
+        </button>
       </div>
     </div>
   </div>

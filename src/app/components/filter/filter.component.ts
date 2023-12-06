@@ -1,13 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-filter',
   standalone: true,
-  imports: [CommonModule],
   templateUrl: './filter.component.html',
-  styleUrl: './filter.component.css'
+  styleUrls: ['./filter.component.css'],
+  imports: [CommonModule, FormsModule]
 })
 export class FilterComponent {
+  selectedFilter = 'name';
 
+  @Output() filterChanged = new EventEmitter<string>();
 }
