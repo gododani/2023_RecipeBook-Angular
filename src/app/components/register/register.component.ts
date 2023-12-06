@@ -107,7 +107,7 @@ export class RegisterComponent {
           .collection('users')
           .add(data)
           .then(async() => {
-            await new Promise(f => setTimeout(f, 1000));
+            await new Promise(f => setTimeout(f, 1100));
             this.router.navigate(['/home']);
           })
           .catch((error) => {
