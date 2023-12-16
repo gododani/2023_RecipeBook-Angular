@@ -67,7 +67,17 @@ export class ModifyRecipeComponent {
         likes: this.recipeService.getRecipeToModify().likes,
         dislikes: this.recipeService.getRecipeToModify().dislikes,
       };
-      this.recipeService.modifyRecipe(modifiedRecipe.id, modifiedRecipe);
+      if (this.recipeService.isOnlineStatus) {
+        this.recipeService.modifyRecipe(
+          modifiedRecipe.id.toString(),
+          modifiedRecipe
+        );
+      } else {
+        this.recipeService.modifyRecipeInIndexedDB(
+          modifiedRecipe.id.toString(),
+          modifiedRecipe
+        );
+      }
     }
   }
 

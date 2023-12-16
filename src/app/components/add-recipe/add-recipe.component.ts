@@ -32,7 +32,7 @@ export class AddRecipeComponent {
 
   constructor(private recipeService: RecipeService) {}
 
-  addRecipe() {
+  async addRecipe() {
     if (!this.recipeForm.valid) {
       return;
     }
@@ -61,7 +61,13 @@ export class AddRecipeComponent {
       steps: steps!.split('\n'),
     } as unknown as Recipe;
 
-    this.recipeService.addRecipe(newRecipe);
+    if (this.recipeService.isOnlineStatus) {
+      // adding recipe to firestore
+      await this.recipeService.addRecipe(newRecipe);
+    } else {
+      // adding recipe to indexedDB
+      await this.recipeService.addRecipeToIndexedDB(newRecipe);
+    }
   }
 
   getErrorMessage(controlName: string): string {

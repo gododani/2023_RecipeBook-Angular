@@ -9,11 +9,126 @@ import { AuthService } from './auth.service';
 })
 export class RecipeService {
   recipeToModify!: Recipe;
+  private db?: IDBDatabase;
+  private objectStoreName = 'recipes';
+  public recipes$?: Observable<Recipe[]>;
+  private isOnline?: boolean = true;
 
   constructor(
     private firestore: AngularFirestore,
     private authService: AuthService
   ) {}
+
+  ngOnInit(): void {}
+
+  get isOnlineStatus(): boolean {
+    return this.isOnline!;
+  }
+
+  initDB() {
+    const request = indexedDB.open('recipes-db', 2);
+
+    request.onerror = (event: any) => {
+      console.error('Database error:', event.target.error);
+    };
+
+    request.onupgradeneeded = (event: any) => {
+      this.db = event.target.result;
+      this.createObjectStore();
+    };
+
+    request.onsuccess = (event: any) => {
+      this.db = event.target.result;
+      //this.loadItems();
+    };
+  }
+
+  detectOnlineStatus(): void {
+    window.addEventListener('offline', this.goOffline);
+    window.addEventListener('online', this.syncWithFirestore);
+  }
+
+  goOffline = (): void => {
+    console.log('App is offline. Switching to IndexedDB.');
+    this.isOnline = false;
+  };
+
+  syncWithFirestore = (): void => {
+    console.log('App is back online. Synchronizing with Firestore.');
+    if (!this.isOnline) {
+      this.isOnline = true;
+      this.syncOperations();
+    }
+  };
+
+  private async syncOperations(): Promise<void> {
+    const transaction = this.db!.transaction(this.objectStoreName);
+    const objectStore = transaction.objectStore(this.objectStoreName);
+
+    objectStore.openCursor().onsuccess = async (event: any) => {
+      const cursor = event.target.result;
+      if (cursor) {
+        const recipe: Recipe = cursor.value;
+        const docRef = this.firestore
+          .collection('recipes')
+          .doc(recipe.id.toString());
+        const doc = await docRef.get().toPromise();
+
+        if (!doc?.exists) {
+          // If the recipe does not exist in Firestore, add it
+          await this.addRecipe(recipe);
+        } else {
+          // If the recipe exists in Firestore, update it
+          this.modifyRecipe(recipe.id.toString(), recipe);
+        }
+        cursor.continue();
+      }
+    };
+  }
+
+  private createObjectStore() {
+    const objectStore = this.db!.createObjectStore(this.objectStoreName, {
+      keyPath: 'id',
+      autoIncrement: true,
+    });
+
+    objectStore.createIndex('name', 'name', { unique: false });
+  }
+
+  loadItemsFromFirestore(): void {
+    this.getRecipes().subscribe((recipes) => {
+      const transaction = this.db!.transaction(
+        this.objectStoreName,
+        'readwrite'
+      );
+      const objectStore = transaction.objectStore(this.objectStoreName);
+      objectStore.clear(); // Clear the object store to avoid duplicating items
+
+      recipes.forEach((recipe) => {
+        objectStore.add(recipe);
+      });
+    });
+  }
+
+  private loadItems() {
+    const objectStore = this.db!.transaction(this.objectStoreName).objectStore(
+      this.objectStoreName
+    );
+
+    this.recipes$ = new Observable<Recipe[]>((observer) => {
+      const items: Recipe[] = [];
+
+      objectStore.openCursor().onsuccess = (event: any) => {
+        const cursor = event.target.result;
+        if (cursor) {
+          items.push(cursor.value);
+          cursor.continue();
+        } else {
+          observer.next(items);
+        }
+      };
+    });
+  }
 
   getRecipes(): Observable<any[]> {
     return this.firestore.collection('recipes').valueChanges({ idField: 'id' });
@@ -29,6 +144,15 @@ export class RecipeService {
       .catch((error) => {
         throw new Error(`Error adding recipe: ${error.message}`);
       });
+  }
+
+  async addRecipeToIndexedDB(newRecipe: Recipe): Promise<void> {
+    const transaction = this.db!.transaction(this.objectStoreName, 'readwrite');
+    const objectStore = transaction.objectStore(this.objectStoreName);
+    newRecipe.id = this.firestore.createId();
+    objectStore.add(newRecipe).onsuccess = (event: any) => {
+      console.log('Recipe added with ID: ', event.target.result);
+    };
   }
 
   getFavouriteRecipeIds(): Observable<string[]> {
@@ -438,8 +562,26 @@ export class RecipeService {
     this.firestore.collection('recipes').doc(recipeId).delete();
   }
 
+  deleteRecipeFromIndexedDB(recipeId: string): void {
+    const transaction = this.db!.transaction(this.objectStoreName, 'readwrite');
+    const objectStore = transaction.objectStore(this.objectStoreName);
+
+    objectStore.delete(recipeId).onsuccess = (event: any) => {
+      console.log('Recipe deleted with ID: ', event.target.result);
+    };
+  }
+
   modifyRecipe(id: string, recipe: Recipe): void {
     this.firestore.collection('recipes').doc(id).update(recipe);
+  }
+
+  modifyRecipeInIndexedDB(id: string, recipe: Recipe): void {
+    const transaction = this.db!.transaction(this.objectStoreName, 'readwrite');
+    const objectStore = transaction.objectStore(this.objectStoreName);
+
+    objectStore.put(recipe).onsuccess = (event: any) => {
+      console.log('Recipe modified with ID: ', event.target.result);
+    };
   }
 
   setRecipeToModify(recipe: any): void {

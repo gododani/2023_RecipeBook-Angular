@@ -64,9 +64,9 @@
       <!-- Favourite, like and dislike icons -->
       <div class="flex justify-between p-5">
         <!-- Favourite -->
-        <div (click)="toggleFavorite(recipe.id)">
+        <div (click)="toggleFavorite(recipe.id.toString())">
           <!-- Add to favorite icon -->
-          <ng-container *ngIf="isFavourite(recipe.id)">
+          <ng-container *ngIf="isFavourite(recipe.id.toString())">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-7 w-7 md:h-6 md:w-6 cursor-pointer"
@@ -83,11 +83,11 @@
         <div class="flex gap-5">
           <!-- Like -->
           <div
-            (click)="toggleLike(recipe.id, recipe.likes)"
+            (click)="toggleLike(recipe.id.toString(), recipe.likes)"
             class="flex items-center gap-1.5"
           >
             <!-- Like icon -->
-            <ng-container *ngIf="!isLiked(recipe.id); else likedIcon">
+            <ng-container *ngIf="!isLiked(recipe.id.toString()); else likedIcon">
               <!-- Like icon -->
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -117,11 +117,11 @@
 
           <!-- Dislike -->
           <div
-            (click)="toggleDislike(recipe.id, recipe.dislikes)"
+            (click)="toggleDislike(recipe.id.toString(), recipe.dislikes)"
             class="flex items-center gap-1.5"
           >
             <!-- Dislike icon -->
-            <ng-container *ngIf="!isDisliked(recipe.id); else dislikedIcon">
+            <ng-container *ngIf="!isDisliked(recipe.id.toString()); else dislikedIcon">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-7 w-7 md:h-6 md:w-6 cursor-pointer"

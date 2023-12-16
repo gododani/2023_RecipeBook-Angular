@@ -146,6 +146,7 @@ export class HomeComponent {
   }
 
   deleteRecipe(recipeId: string): void {
+    this.recipeService.deleteRecipeFromIndexedDB(recipeId);
     this.recipeService.deleteRecipe(recipeId);
   }
 
