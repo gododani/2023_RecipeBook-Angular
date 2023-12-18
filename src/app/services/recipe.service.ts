@@ -12,14 +12,19 @@ export class RecipeService {
   private db?: IDBDatabase;
   private objectStoreName = 'recipes';
   public recipes$?: Observable<Recipe[]>;
-  private isOnline?: boolean = true;
+  private isOnline?: boolean = navigator.onLine;
 
   constructor(
     private firestore: AngularFirestore,
     private authService: AuthService
-  ) {}
+  ) {
+    window.addEventListener('online', () => (this.isOnline = true));
+    window.addEventListener('offline', () => (this.isOnline = false));
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+  }
 
   // Getter for the isOnline property.
   get isOnlineStatus(): boolean {
@@ -182,21 +187,19 @@ export class RecipeService {
   }
 
   // This function is returning an observable of the recipes from IndexedDB.
-  getRecipesFromIndexedDB(): Promise<Recipe[]> {
-    return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(this.objectStoreName);
+  getRecipesFromIndexedDB(): Observable<Recipe[]> {
+    return new Observable<Recipe[]>(observer => {
+      const transaction = this.db!.transaction(this.objectStoreName, 'readonly');
       const objectStore = transaction.objectStore(this.objectStoreName);
+      const request = objectStore.getAll();
 
-      const items: Recipe[] = [];
+      request.onsuccess = (event: any) => {
+        observer.next(event.target.result);
+        observer.complete();
+      };
 
-      objectStore.openCursor().onsuccess = (event: any) => {
-        const cursor = event.target.result;
-        if (cursor) {
-          items.push(cursor.value);
-          cursor.continue();
-        } else {
-          resolve(items);
-        }
+      request.onerror = (event: any) => {
+        observer.error(event);
       };
     });
   }

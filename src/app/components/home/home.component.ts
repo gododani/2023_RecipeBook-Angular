@@ -33,13 +33,14 @@ export class HomeComponent {
 
   ngOnInit(): void {
     // If the user is online, get recipes from firebase and apply the filter, otherwise get them from indexedDB
+    console.log('isOnlineStatus', this.recipeService.isOnlineStatus);
     if (this.recipeService.isOnlineStatus) {
       this.recipeService.getRecipes().subscribe((data) => {
         this.recipes = data;
         this.applyFilter(this.selectedFilter);
       });
     } else {
-      this.recipeService.getRecipesFromIndexedDB().then((data) => {
+      this.recipeService.getRecipesFromIndexedDB().subscribe((data) => {
         this.recipes = data;
         this.applyFilter(this.selectedFilter);
       });
@@ -48,7 +49,7 @@ export class HomeComponent {
     this.authService.isLoggedIn().then(async (loggedIn) => {
       this.userLoggedIn = loggedIn;
 
-      if (this.userLoggedIn) {
+      if (this.userLoggedIn && this.recipeService.isOnlineStatus) {
         if (await this.authService.isAdmin()) {
           this.isAdmin = true;
         }
