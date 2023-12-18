@@ -40,7 +40,7 @@ export class HomeComponent {
         this.applyFilter(this.selectedFilter);
       });
     } else {
-      this.recipeService.getRecipesFromIndexedDB().subscribe((data) => {
+      this.recipeService.getRecipesFromIndexedDB().then((data) => {
         this.recipes = data;
         this.applyFilter(this.selectedFilter);
       });
