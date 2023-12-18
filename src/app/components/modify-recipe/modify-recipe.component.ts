@@ -40,7 +40,7 @@ export class ModifyRecipeComponent {
       cookTime: recipe.cookTime,
       difficulty: recipe.difficulty,
       price: recipe.price,
-      serving: recipe.serving,
+      serving: recipe.serving.toString(),
       ingredients: recipe.ingredients.join('\n'),
       steps: recipe.steps.join('\n'),
     });

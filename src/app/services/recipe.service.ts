@@ -21,10 +21,12 @@ export class RecipeService {
 
   ngOnInit(): void {}
 
+  // Getter for the isOnline property.
   get isOnlineStatus(): boolean {
     return this.isOnline!;
   }
 
+  // This function is initializing the IndexedDB.
   initDB() {
     const request = indexedDB.open('recipes-db', 2);
 
@@ -43,49 +45,72 @@ export class RecipeService {
     };
   }
 
+  // This metod is detecting the online status of the app.
   detectOnlineStatus(): void {
     window.addEventListener('offline', this.goOffline);
     window.addEventListener('online', this.syncWithFirestore);
   }
 
+  // This function is called when the app is offline. It sets the isOnline property to false.
   goOffline = (): void => {
     console.log('App is offline. Switching to IndexedDB.');
     this.isOnline = false;
+    console.log(this.isOnline);
   };
 
-  syncWithFirestore = (): void => {
+  // This function is called when the app is back online. It sets the isOnline property to true and calls the syncOperations() function.
+  syncWithFirestore = async (): Promise<void> => {
     console.log('App is back online. Synchronizing with Firestore.');
+    console.log(this.isOnline);
     if (!this.isOnline) {
+      console.log('Inside of if');
       this.isOnline = true;
-      this.syncOperations();
+      console.log(this.isOnline);
+      await this.syncOperations();
     }
   };
 
+  // This function is getting all the recipes from IndexedDB and then it is calling the syncRecipesWithFirestore() function to synchronize the recipes with Firestore.
   private async syncOperations(): Promise<void> {
     const transaction = this.db!.transaction(this.objectStoreName);
     const objectStore = transaction.objectStore(this.objectStoreName);
+    console.log('Syncing operations...');
 
-    objectStore.openCursor().onsuccess = async (event: any) => {
+    const recipes: Recipe[] = [];
+    objectStore.openCursor().onsuccess = (event: any) => {
       const cursor = event.target.result;
       if (cursor) {
-        const recipe: Recipe = cursor.value;
-        const docRef = this.firestore
-          .collection('recipes')
-          .doc(recipe.id.toString());
-        const doc = await docRef.get().toPromise();
-
-        if (!doc?.exists) {
-          // If the recipe does not exist in Firestore, add it
-          await this.addRecipe(recipe);
-        } else {
-          // If the recipe exists in Firestore, update it
-          this.modifyRecipe(recipe.id.toString(), recipe);
-        }
+        recipes.push(cursor.value);
         cursor.continue();
+      } else {
+        this.syncRecipesWithFirestore(recipes);
       }
     };
   }
 
+  // This function is going through all the recipes and checking if they exist in Firestore. If they do not exist, it is adding them to Firestore. If they exist, it is updating them.
+  private async syncRecipesWithFirestore(recipes: Recipe[]): Promise<void> {
+    for (const recipe of recipes) {
+      const docRef = this.firestore
+        .collection('recipes')
+        .doc(recipe.id.toString());
+      const doc = await docRef.get().toPromise();
+
+      if (!doc!.exists) {
+        // If the recipe does not exist in Firestore, add it
+        console.log('Adding recipe to Firestore...');
+        await this.addRecipe(recipe, recipe.id.toString());
+        console.log('Recipe added to Firestore.');
+      } else {
+        // If the recipe exists in Firestore, update it
+        console.log('Updating recipe in Firestore...');
+        this.modifyRecipe(recipe.id.toString(), recipe);
+        console.log('Recipe updated in Firestore.');
+      }
+    }
+  }
+
+  // This function is creating the object store in IndexedDB.
   private createObjectStore() {
     const objectStore = this.db!.createObjectStore(this.objectStoreName, {
       keyPath: 'id',
@@ -95,6 +120,7 @@ export class RecipeService {
     objectStore.createIndex('name', 'name', { unique: false });
   }
 
+  // This function is setting the recipes$ observable to the value of the recipes collection in Firestore.
   loadItemsFromFirestore(): void {
     this.getRecipes().subscribe((recipes) => {
       const transaction = this.db!.transaction(
@@ -107,6 +133,26 @@ export class RecipeService {
       recipes.forEach((recipe) => {
         objectStore.add(recipe);
       });
+    });
+  }
+
+  // This function is setting the recipes$ observable to the value of the recipes from IndexedDB.
+  loadItemsFromIndexedDB(): void {
+    const transaction = this.db!.transaction(this.objectStoreName);
+    const objectStore = transaction.objectStore(this.objectStoreName);
+
+    this.recipes$ = new Observable<Recipe[]>((observer) => {
+      const items: Recipe[] = [];
+
+      objectStore.openCursor().onsuccess = (event: any) => {
+        const cursor = event.target.result;
+        if (cursor) {
+          items.push(cursor.value);
+          cursor.continue();
+        } else {
+          observer.next(items);
+        }
+      };
     });
   }
 
@@ -130,31 +176,61 @@ export class RecipeService {
     });
   }
 
+  // This function is returning an observable of the recipes collection in Firestore.
   getRecipes(): Observable<any[]> {
     return this.firestore.collection('recipes').valueChanges({ idField: 'id' });
   }
 
-  async addRecipe(newRecipe: Recipe): Promise<void> {
+  // This function is returning an observable of the recipes from IndexedDB.
+  getRecipesFromIndexedDB(): Promise<Recipe[]> {
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction(this.objectStoreName);
+      const objectStore = transaction.objectStore(this.objectStoreName);
+
+      const items: Recipe[] = [];
+
+      objectStore.openCursor().onsuccess = (event: any) => {
+        const cursor = event.target.result;
+        if (cursor) {
+          items.push(cursor.value);
+          cursor.continue();
+        } else {
+          resolve(items);
+        }
+      };
+    });
+  }
+
+  // This function is adding a new recipe to Firestore. If the recipe id is not provided, it is generated by the createId() function.
+  async addRecipe(
+    newRecipe: Recipe,
+    id: string = this.firestore.createId()
+  ): Promise<void> {
     const recipeCollection = this.firestore.collection('recipes');
     return recipeCollection
-      .add(newRecipe)
-      .then((docRef) => {
-        console.log('Recipe added with ID: ', docRef.id);
+      .doc(id)
+      .set(newRecipe)
+      .then(() => {
+        console.log('Recipe added with ID: ', id);
       })
       .catch((error) => {
         throw new Error(`Error adding recipe: ${error.message}`);
       });
   }
 
+  // This function is adding a new recipe to IndexedDB. it generates the id by the createId() function.
   async addRecipeToIndexedDB(newRecipe: Recipe): Promise<void> {
     const transaction = this.db!.transaction(this.objectStoreName, 'readwrite');
     const objectStore = transaction.objectStore(this.objectStoreName);
+
     newRecipe.id = this.firestore.createId();
+
     objectStore.add(newRecipe).onsuccess = (event: any) => {
       console.log('Recipe added with ID: ', event.target.result);
     };
   }
 
+  // This function is returning an observable of the favourite recipe ids of the current user.
   getFavouriteRecipeIds(): Observable<string[]> {
     return new Observable((observer) => {
       this.authService.getCurrentUserEmail().then((userEmail) => {
@@ -192,6 +268,7 @@ export class RecipeService {
     });
   }
 
+  // This function is returning an observable of the favourite recipes of the current user.
   getUserFavouriteRecipes(): Observable<Recipe[]> {
     return this.getFavouriteRecipeIds().pipe(
       switchMap((recipeIds) => {
@@ -223,6 +300,7 @@ export class RecipeService {
     );
   }
 
+  // This function is adding a recipe id to the favourite recipe ids of the current user.
   addToFavorites(recipeId: string): void {
     this.authService.getCurrentUserEmail().then((userEmail) => {
       if (!userEmail) {
@@ -267,6 +345,7 @@ export class RecipeService {
     });
   }
 
+  // This function is removing a recipe id from the favourite recipe ids of the current user.
   removeFromFavorites(recipeId: string): void {
     this.authService.getCurrentUserEmail().then((userEmail) => {
       if (!userEmail) {
@@ -312,6 +391,7 @@ export class RecipeService {
     });
   }
 
+  // This function is returning the like count of a recipe based on the recipe id.
   getRecipeLikes(recipeId: string): Observable<number> {
     return new Observable((observer) => {
       this.firestore
@@ -338,6 +418,7 @@ export class RecipeService {
     });
   }
 
+  // This function is returning the dislike count of a recipe based on the recipe id.
   getRecipeDislikes(recipeId: string): Observable<number> {
     return new Observable((observer) => {
       this.firestore
@@ -364,6 +445,7 @@ export class RecipeService {
     });
   }
 
+  // This function is returning the liked recipe ids of the current user.
   getUserLikes(): Observable<string[]> {
     return new Observable((observer) => {
       this.authService.getCurrentUserEmail().then((userEmail) => {
@@ -401,12 +483,14 @@ export class RecipeService {
     });
   }
 
+  // This function is modifying the like count of a recipe based on the recipe id.
   likeRecipe(recipeId: string, newRecipeLike: number) {
     this.firestore.collection('recipes').doc(recipeId).update({
       likes: newRecipeLike,
     });
   }
 
+  // This function is adding or removing a recipe id to the liked recipe ids of the current user.
   addUserLike(recipeId: string) {
     this.authService.getCurrentUserEmail().then((userEmail) => {
       if (!userEmail) {
@@ -461,6 +545,7 @@ export class RecipeService {
     });
   }
 
+  // This function is returning the disliked recipe ids of the current user.
   getUserDislikes(): Observable<string[]> {
     return new Observable((observer) => {
       this.authService.getCurrentUserEmail().then((userEmail) => {
@@ -498,12 +583,14 @@ export class RecipeService {
     });
   }
 
+  // This function is modifying the dislike count of a recipe based on the recipe id.
   dislikeRecipe(recipeId: string, newRecipeDislike: number) {
     this.firestore.collection('recipes').doc(recipeId).update({
       dislikes: newRecipeDislike,
     });
   }
 
+  // This function is adding or removing a recipe id to the disliked recipe ids of the current user.
   addUserDislike(recipeId: string) {
     this.authService.getCurrentUserEmail().then((userEmail) => {
       if (!userEmail) {
@@ -558,10 +645,12 @@ export class RecipeService {
     });
   }
 
+  // This function is deleting a recipe from Firestore based on the recipe id.
   deleteRecipe(recipeId: string): void {
     this.firestore.collection('recipes').doc(recipeId).delete();
   }
 
+  // This function is deleting a recipe from IndexedDB based on the recipe id.
   deleteRecipeFromIndexedDB(recipeId: string): void {
     const transaction = this.db!.transaction(this.objectStoreName, 'readwrite');
     const objectStore = transaction.objectStore(this.objectStoreName);
@@ -571,10 +660,12 @@ export class RecipeService {
     };
   }
 
+  // This function is modifying a recipe in Firestore based on the recipe id.
   modifyRecipe(id: string, recipe: Recipe): void {
     this.firestore.collection('recipes').doc(id).update(recipe);
   }
 
+  // This function is modifying a recipe in IndexedDB based on the recipe id.
   modifyRecipeInIndexedDB(id: string, recipe: Recipe): void {
     const transaction = this.db!.transaction(this.objectStoreName, 'readwrite');
     const objectStore = transaction.objectStore(this.objectStoreName);
@@ -584,11 +675,13 @@ export class RecipeService {
     };
   }
 
-  setRecipeToModify(recipe: any): void {
+  // This function is setting the recipeToModify property to the recipe that is going to be modified.
+  setRecipeToModify(recipe: Recipe): void {
     this.recipeToModify = recipe;
   }
 
-  getRecipeToModify(): any {
+  // This function is returning the recipe that is going to be modified.
+  getRecipeToModify(): Recipe {
     return this.recipeToModify;
   }
 }

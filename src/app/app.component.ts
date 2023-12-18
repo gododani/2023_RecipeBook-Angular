@@ -37,6 +37,8 @@ export class AppComponent {
 
     if (this.recipeService.isOnlineStatus) {
       this.recipeService.loadItemsFromFirestore();
+    } else {
+      this.recipeService.loadItemsFromIndexedDB();
     }
 
     this.subscription = interval(3000).subscribe(() => {
