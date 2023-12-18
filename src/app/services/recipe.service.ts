@@ -55,17 +55,13 @@ export class RecipeService {
   goOffline = (): void => {
     console.log('App is offline. Switching to IndexedDB.');
     this.isOnline = false;
-    console.log(this.isOnline);
   };
 
   // This function is called when the app is back online. It sets the isOnline property to true and calls the syncOperations() function.
   syncWithFirestore = async (): Promise<void> => {
     console.log('App is back online. Synchronizing with Firestore.');
-    console.log(this.isOnline);
     if (!this.isOnline) {
-      console.log('Inside of if');
       this.isOnline = true;
-      console.log(this.isOnline);
       await this.syncOperations();
     }
   };
@@ -98,14 +94,10 @@ export class RecipeService {
 
       if (!doc!.exists) {
         // If the recipe does not exist in Firestore, add it
-        console.log('Adding recipe to Firestore...');
         await this.addRecipe(recipe, recipe.id.toString());
-        console.log('Recipe added to Firestore.');
       } else {
         // If the recipe exists in Firestore, update it
-        console.log('Updating recipe in Firestore...');
         this.modifyRecipe(recipe.id.toString(), recipe);
-        console.log('Recipe updated in Firestore.');
       }
     }
   }
@@ -683,5 +675,37 @@ export class RecipeService {
   // This function is returning the recipe that is going to be modified.
   getRecipeToModify(): Recipe {
     return this.recipeToModify;
+  }
+
+  // This function is searching for recipes by name in IndexedDB.
+  searchRecipesInIndexedDB(searchTerm: string): Observable<any[]> {
+    return new Observable<Recipe[]>((observer) => {
+      const transaction = this.db!.transaction(
+        this.objectStoreName,
+        'readonly'
+      );
+      const objectStore = transaction.objectStore(this.objectStoreName);
+      const request = objectStore.getAll();
+
+      request.onsuccess = (event: any) => {
+        const recipes = event.target.result;
+        const filteredRecipes = recipes.filter((recipe: Recipe) =>
+          recipe.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        observer.next(filteredRecipes);
+        observer.complete();
+      };
+
+      request.onerror = (event: any) => {
+        observer.error(event);
+      };
+    });
+  }
+
+  // This function is searching for recipes by name in Firestore.
+  searchRecipesInFirebase(searchTerm: string): Observable<any[]> {
+    return this.firestore
+      .collection('recipes', (ref) => ref.where('name', '==', searchTerm))
+      .valueChanges({ idField: 'id' });
   }
 }

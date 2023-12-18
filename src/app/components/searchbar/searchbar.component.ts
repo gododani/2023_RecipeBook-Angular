@@ -42,8 +42,10 @@ export class SearchbarComponent {
   }
 
   searchRecipes(searchTerm: string): Observable<any[]> {
-    return this.firestore
-      .collection('recipes', (ref) => ref.where('name', '==', searchTerm))
-      .valueChanges({ idField: 'id'});
+    if (this.recipeService.isOnlineStatus) {
+      return this.recipeService.searchRecipesInFirebase(searchTerm);
+    } else {
+      return this.recipeService.searchRecipesInIndexedDB(searchTerm);
+    }
   }
 }
